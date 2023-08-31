@@ -57,4 +57,5 @@ public class UserRepository {
     public static void delete(User course) {
         UserDB.userList.removeIf(c -> c.getId().equals(course.getId()));
     }
+    
 }

@@ -10,6 +10,7 @@ import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class UserService {
@@ -58,6 +59,51 @@ public class UserService {
         } while (userRepository.existsById(randomId));
 
         return randomId;
+    }
+    public boolean verifyOldPassword(int id, String oldPassword) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (!userOptional.isPresent()) {
+            throw new IllegalArgumentException("Người dùng không tồn tại");
+        }
+        User user = userOptional.get();
+        String storedPassword = user.getPassword();
+
+        return storedPassword.equals(oldPassword);
+    }
+
+
+    public void updatePasswordInDatabase(int id, String newPassword) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (!userOptional.isPresent()) {
+            throw new IllegalArgumentException("Người dùng không tồn tại");
+        }
+
+        User user = userOptional.get();
+        user.setPassword(newPassword);
+
+        // Lưu người dùng đã cập nhật vào cơ sở dữ liệu hoặc nguồn dữ liệu tương ứng
+        userRepository.save(user);
+    }
+
+    public String generateNewPassword(int id) {
+        String newPassword = generateRandomPassword();
+        // Lưu mật khẩu mới vào cơ sở dữ liệu hoặc nguồn dữ liệu tương ứng
+        updatePasswordInDatabase(id, newPassword);
+        return newPassword;
+    }
+    public String generateRandomPassword() {
+        int length = 10;
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder newPassword = new StringBuilder();
+        Random random = new Random();
+
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(characters.length());
+            newPassword.append(characters.charAt(index));
+        }
+
+        return newPassword.toString();
     }
 
 }
