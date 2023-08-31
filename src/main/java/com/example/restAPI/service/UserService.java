@@ -1,6 +1,5 @@
 package com.example.restAPI.service;
 
-import com.example.restAPI.model.Page;
 import com.example.restAPI.model.User;
 import com.example.restAPI.response.UserRepository;
 import org.springframework.stereotype.Service;
@@ -12,22 +11,22 @@ import java.util.Random;
 public class UserService {
     private UserRepository userRepository;
 
-    public Page<User> getUsers(int page, int limit) {
+    public List<User> getUsers(int page, int limit) {
+        // Tính toán offset để lấy người dùng từ vị trí bắt đầu của trang
         int offset = (page - 1) * limit;
 
-        List<User> users = userRepository.getUsers(offset, limit);
-        int totalUsers = userRepository.getTotalUsers();
-        int totalPages = (int) Math.ceil((double) totalUsers / limit);
+        // Gọi phương thức trong userRepository để lấy danh sách người dùng phân trang
+        List<User> userList = userRepository.getUsers(offset, limit);
 
-        Page<User> usersPage = new Page<>();
-        usersPage.setData(users);
-        usersPage.setCurrentPage(page);
-        usersPage.setSize(limit);
-        usersPage.setTotalPage(totalPages);
-
-        return usersPage;
+        return userList;
     }
-    public List<User> searchUsersByName(String name) {
+
+    public int getTotalUsers() {
+        // Gọi phương thức trong userRepository để lấy tổng số người dùng
+        int totalUsers = userRepository.getTotalUsers();
+
+        return totalUsers;
+    }    public List<User> searchUsersByName(String name) {
         return userRepository.searchUsersByName(name);
     }
     public User getUserById(int id) {

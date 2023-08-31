@@ -1,7 +1,8 @@
 package com.example.restAPI.response;
 
 import com.example.restAPI.database.UserDB;
-import com.example.restAPI.model.Page;
+import com.example.restAPI.model.Pages;
+import com.example.restAPI.model.Pages;
 import com.example.restAPI.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserRepository {
     private User user;
-    private Page page;
+    private Pages page;
     private List<User> userList;
 
     public UserRepository() {

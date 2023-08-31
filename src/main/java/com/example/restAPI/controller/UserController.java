@@ -1,31 +1,31 @@
 package com.example.restAPI.controller;
-
-import com.example.restAPI.model.Page;
+import com.example.restAPI.model.Pages;
 import com.example.restAPI.model.User;
 import com.example.restAPI.response.AvatarRequest;
 import com.example.restAPI.response.PasswordRequest;
 import com.example.restAPI.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 
-@RestController
+@Controller
 @RequestMapping("/api/v1/users")
 public class UserController {
-        private final UserService userService;
+        private UserService userService;
 
-        public UserController(UserService userService) {
-            this.userService = userService;
-        }
 
-        @GetMapping
-        public ResponseEntity<Page<User>> getUsers(@RequestParam(defaultValue = "1") int page,
-                                                   @RequestParam(defaultValue = "10") int limit) {
-            Page<User> usersPage = userService.getUsers(page, limit);
-            return ResponseEntity.ok(usersPage);
-        }
+    @GetMapping
+    public ResponseEntity<Pages> getUsers(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int limit) {
+        List<User> userList = userService.getUsers(page, limit);
+        int totalUsers = userService.getTotalUsers();
+        int totalPages = (int) Math.ceil((double) totalUsers / limit);
+
+        Pages response = new Pages(userList, page, limit, totalPages);
+        return ResponseEntity.ok(response);
+    }
     @GetMapping("/api/v1/search")
     public List<User> searchUsersByName(@RequestParam("name") String name) {
         return userService.searchUsersByName(name);

@@ -9,8 +9,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Page<T> {
-    private List<T> data;
+public class Pages {
+    private List<User> data;
     private int currentPage;
     private int size = 10;
     private int totalPage;
