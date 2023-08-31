@@ -4,9 +4,7 @@ import com.example.restAPI.model.Page;
 import com.example.restAPI.model.User;
 import com.example.restAPI.response.AvatarRequest;
 import com.example.restAPI.response.PasswordRequest;
-import com.example.restAPI.response.UserRepository;
 import com.example.restAPI.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,21 +57,15 @@ public class UserController {
     @PutMapping("/api/v1/users/{id}/update-avatar")
     public void updateAvatar(@PathVariable int id, @RequestBody AvatarRequest avatarRequest) {
     }
-    @PutMapping("/api/v1/users/{id}/update-password")
-    public void updatePassword(@PathVariable int id, @RequestBody PasswordRequest passwordRequest) {
-            UserService sv = new UserService();
-        String oldPassword = passwordRequest.getOldPassword();
-        String newPassword = passwordRequest.getNewPassword();
-        boolean isPasswordValid = userService.verifyOldPassword(id, oldPassword);
-        if (!isPasswordValid) {
-            throw new IllegalArgumentException("Mật khẩu cũ không chính xác");
-        }
-        if (oldPassword.equals(newPassword)) {
-            throw new IllegalArgumentException("Mật khẩu mới không được giống mật khẩu cũ");
-        }
-        userService.updatePasswordInDatabase(id, newPassword);
-    }
+    @PutMapping("/{id}/update-password")
+    public ResponseEntity<Void> updatePassword(@PathVariable int id, @RequestBody PasswordRequest request) {
+        String oldPassword = request.getOldPassword();
+        String newPassword = request.getNewPassword();
 
+        userService.changePassword(id, oldPassword, newPassword);
+
+        return ResponseEntity.ok().build();
+    }
     @PostMapping("/{id}/forgot-password")
     public ResponseEntity<String> forgotPassword(@PathVariable int id) {
         String newPassword = userService.generateNewPassword(id);

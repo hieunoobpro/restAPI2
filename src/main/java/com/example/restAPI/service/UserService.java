@@ -3,11 +3,7 @@ package com.example.restAPI.service;
 import com.example.restAPI.model.Page;
 import com.example.restAPI.model.User;
 import com.example.restAPI.response.UserRepository;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.awt.print.Pageable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -104,6 +100,18 @@ public class UserService {
         }
 
         return newPassword.toString();
+    }
+
+    public void changePassword(int id, String oldPassword, String newPassword) {
+        User user = getUserById(id);
+        if (!user.getPassword().equals(oldPassword)) {
+            throw new IllegalArgumentException("Mật khẩu cũ không chính xác");
+        }
+
+        if (user.getPassword().equals(newPassword)) {
+            throw new IllegalArgumentException("Mật khẩu mới không được giống mật khẩu cũ");
+        }
+        updatePasswordInDatabase(id, newPassword);
     }
 
 }
