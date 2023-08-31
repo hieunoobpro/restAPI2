@@ -56,17 +56,6 @@ public class UserService {
 
         return randomId;
     }
-    public boolean verifyOldPassword(int id, String oldPassword) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (!userOptional.isPresent()) {
-            throw new IllegalArgumentException("Người dùng không tồn tại");
-        }
-        User user = userOptional.get();
-        String storedPassword = user.getPassword();
-
-        return storedPassword.equals(oldPassword);
-    }
-
 
     public void updatePasswordInDatabase(int id, String newPassword) {
         Optional<User> userOptional = userRepository.findById(id);
